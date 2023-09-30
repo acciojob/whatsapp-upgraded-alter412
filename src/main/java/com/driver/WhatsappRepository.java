@@ -16,11 +16,11 @@ public class WhatsappRepository {
     private Map<String,Group> groupsDB;
 
     private Map<String,String> groupAdminMap;
-    private Map<String,Set<String>> groupUsersMap;
+    private Map<String,List<String>> groupUsersMap;
 
-    private Map<String, Set<Integer>> groupMessagesMap;
+    private Map<String, List<Integer>> groupMessagesMap;
 
-    private Map<String,Set<Integer>> userMessageMap;
+    private Map<String,List<Integer>> userMessageMap;
 
     public WhatsappRepository() {
         this.ithM = 0;
@@ -56,7 +56,7 @@ public class WhatsappRepository {
             group.setName(users.get(1).getName());
             group.setNumberOfParticipants(2);
             this.groupsDB.put(users.get(1).getName(),group);
-            this.groupUsersMap.put(group.getName(),users.stream().map(user -> user.getMobile()).collect(Collectors.toSet()));
+            this.groupUsersMap.put(group.getName(),users.stream().map(user -> user.getMobile()).collect(Collectors.toList()));
             this.groupAdminMap.put(group.getName(),users.get(0).getMobile());
             return group;
         }else if(users.size()>2){
@@ -66,7 +66,7 @@ public class WhatsappRepository {
             group.setNumberOfParticipants(users.size());
             this.groupsDB.put(group.getName(),group);
             this.groupAdminMap.put(group.getName(),users.get(0).getMobile());
-            this.groupUsersMap.put(group.getName(),users.stream().map(user -> user.getMobile()).collect(Collectors.toSet()));
+            this.groupUsersMap.put(group.getName(),users.stream().map(user -> user.getMobile()).collect(Collectors.toList()));
             return group;
         }
         return null;
@@ -95,11 +95,11 @@ public class WhatsappRepository {
             throw new Exception("You are not allowed to send message");
         }
         if(!this.groupMessagesMap.containsKey(group.getName())){
-          this.groupMessagesMap.put(group.getName(), new HashSet<>());
+          this.groupMessagesMap.put(group.getName(), new ArrayList<>());
         }
         this.groupMessagesMap.get(group.getName()).add(message.getId());
         if(!this.userMessageMap.containsKey(sender.getMobile())){
-            this.userMessageMap.put(sender.getMobile(), new HashSet<>());
+            this.userMessageMap.put(sender.getMobile(), new ArrayList<>());
         }
         this.userMessageMap.get(sender.getMobile()).add(message.getId());
         return this.groupMessagesMap.get(group.getName()).size();
@@ -154,7 +154,7 @@ public class WhatsappRepository {
         if(groupAdminMap.get(fgroup).equals(user.getMobile())){
             throw new Exception("Cannot remove admin");
         }
-        Set<Integer> messages = userMessageMap.get(user.getMobile());
+        List<Integer> messages = userMessageMap.get(user.getMobile());
         userMessageMap.remove(user.getMobile());
         usersDB.remove(user.getMobile());
         groupUsersMap.get(fgroup).remove(user.getMobile());
@@ -163,6 +163,6 @@ public class WhatsappRepository {
             groupMessagesMap.get(fgroup).remove(id);
         }
 
-        return groupUsersMap.get(fgroup).size() + groupMessagesMap.get(fgroup).size() + messagesDB.size() + 1;
+        return groupUsersMap.get(fgroup).size() + groupMessagesMap.get(fgroup).size() + messagesDB.size();
     }
 }
