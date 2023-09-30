@@ -160,7 +160,7 @@ public class WhatsappRepository {
         groupUsersMap.get(fgroup).remove(user.getMobile());
         for(int id : messages){
             messagesDB.remove(id);
-            groupMessagesMap.get(fgroup).remove(Integer.valueOf(id));
+            groupMessagesMap.get(fgroup).removeAll(Arrays.asList(id));
         }
 
         return groupUsersMap.get(fgroup).size() + groupMessagesMap.get(fgroup).size() + messagesDB.size();
