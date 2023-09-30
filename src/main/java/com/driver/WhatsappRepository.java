@@ -94,7 +94,13 @@ public class WhatsappRepository {
         if(!groupUsersMap.get(group.getName()).contains(sender.getMobile())){
             throw new Exception("You are not allowed to send message");
         }
+        if(!this.groupMessagesMap.containsKey(group.getName())){
+          this.groupMessagesMap.put(group.getName(), new HashSet<>());
+        }
         this.groupMessagesMap.get(group.getName()).add(message.getId());
+        if(!this.userMessageMap.containsKey(sender.getMobile())){
+            this.userMessageMap.put(sender.getMobile(), new HashSet<>());
+        }
         this.userMessageMap.get(sender.getMobile()).add(message.getId());
         return this.groupMessagesMap.get(group.getName()).size();
     }
