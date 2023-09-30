@@ -163,6 +163,6 @@ public class WhatsappRepository {
             groupMessagesMap.get(fgroup).removeAll(Arrays.asList(id));
         }
 
-        return groupUsersMap.get(fgroup).size() + groupMessagesMap.get(fgroup).size() + messagesDB.size();
+        return groupUsersMap.get(fgroup).size() + groupMessagesMap.get(fgroup).size() + messagesDB.size() -1;
     }
 }
